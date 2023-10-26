@@ -40,7 +40,7 @@ def upload_cohort_epochs(data_directory):
                     ID = root.split('\\')[-1]
                     # if (ID == 'RGECO_GCamP_Batch3_one') & ('PRE_MANUAL' not in f):
                     #     continue
-                    print(ID, f)
+                    # print(ID, f)
                     ID_dtype = np.load(root + '\\' + f, allow_pickle=True).item()
 
                     for epoch, epoch_df in ID_dtype.items():
@@ -685,7 +685,7 @@ def plot_and_extract_correlated_ROIs(cohort_deltaF, cohort_events, r_thresh, eve
         # pdf.close()
 
 
-def filter_correlated_ROIs(correlated_ROIs, pairwise_cutoff, cutoff_on, nbins):
+def filter_correlated_ROIs(correlated_ROIs, pairwise_cutoff, cutoff_on, nbins, display_plot):
     ## Loop through all ROI-pairs in correlated_ROIs dict and construct pairwise-event ratio dataframe ##
     correlation_event_ratios = {}
     for ID, ID_dict in correlated_ROIs.items():
@@ -729,28 +729,31 @@ def filter_correlated_ROIs(correlated_ROIs, pairwise_cutoff, cutoff_on, nbins):
         xmax = np.max(np.hstack([channel_array, mean_array, max_array]))
         bins = np.linspace(xmin, xmax, nbins + 1)
 
-        # ## Plot the resulting histograms ##
-        # sns.set()
-        # fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(9, 2), sharey=True, sharex=True)
-        #
-        # ax[0].hist(channel_array, bins=bins, density=True, alpha=0.7)
-        # ax[0].set_title('individual pairwise event ratios', fontsize=10)
-        #
-        # ax[1].hist(mean_array, bins=bins, density=True, alpha=0.7)
-        # ax[1].set_title('mean ROI-by-ROI event ratios', fontsize=10)
-        #
-        # ax[2].hist(max_array, bins=bins, density=True, alpha=0.7)
-        # ax[2].set_title('max ROI-by-ROI event ratios', fontsize=10)
-        #
-        # ## Loop to plot similar annotations across all subplots ##
-        # for col, ROIs in zip(range(3), [nROIs_individual, nROIs_means, nROIs_maxes]):
-        #     ROI_label = 'ROI pairs' if col == 0 else 'ROIs'
-        #     ax[col].axvline(cutoff)
-        #     ax[col].text(x=ax[col].get_xlim()[1], y=ax[col].get_ylim()[1],
-        #                  s=f'{ROIs} {ROI_label} > cutoff\n({pairwise_cutoff} quantile = {cutoff:.{3}f})', fontsize=8,
-        #                  horizontalalignment='right', verticalalignment='top')
-        # plt.suptitle(channel, fontsize=12, y=1.1)
-        # plt.show()
+        if display_plot == True:
+            ## Plot the resulting histograms ##
+            sns.set()
+            fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(9, 2), sharey=True, sharex=True)
+
+            ax[0].hist(channel_array, bins=bins, density=True, alpha=0.7)
+            ax[0].set_title('individual pairwise event ratios', fontsize=10)
+
+            ax[1].hist(mean_array, bins=bins, density=True, alpha=0.7)
+            ax[1].set_title('mean ROI-by-ROI event ratios', fontsize=10)
+
+            ax[2].hist(max_array, bins=bins, density=True, alpha=0.7)
+            ax[2].set_title('max ROI-by-ROI event ratios', fontsize=10)
+
+            ## Loop to plot similar annotations across all subplots ##
+            for col, ROIs in zip(range(3), [nROIs_individual, nROIs_means, nROIs_maxes]):
+                ROI_label = 'ROI pairs' if col == 0 else 'ROIs'
+                ax[col].axvline(cutoff)
+                ax[col].text(x=ax[col].get_xlim()[1], y=ax[col].get_ylim()[1],
+                             s=f'{ROIs} {ROI_label} > cutoff\n({pairwise_cutoff} quantile = {cutoff:.{3}f})', fontsize=8,
+                             horizontalalignment='right', verticalalignment='top')
+            plt.suptitle(channel, fontsize=12, y=1.1)
+            plt.show()
+        else:
+            None
 
         ## Apply cutoff on desired dataset to return filtered ROI dataframe with corresponding event ratio metric (i.e. mean or max event ratio) ##
         if cutoff_on == 'maxes':
