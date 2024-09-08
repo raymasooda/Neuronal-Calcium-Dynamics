@@ -1,1 +1,1 @@
-Code to process two-photon calcium imaging data of simultaneous 2-channel recordings of thalamic boutons (GCaMP6f) and cortical dendrites (jRGECO1a) in layer 1 of the posterior parietal cortex of mice. Recordings were done during various probabilistic Go/NoGo paradigms.
+Code to process two-photon calcium imaging data of simultaneous 2-channel recordings of thalamic boutons (GCaMP6f) and cortical dendrites (jRGECO1a) in layer 1 of the posterior parietal cortex of mice. Recordings were done during various Go/NoGo paradigms.
